@@ -3,7 +3,7 @@ import express from 'express';
 
 // controller_file
 import indexController from './controller/IndexController';
-import userController from './controller/UserController';
+import taskController from './controller/TaskController';
 
 // app
 const app = express();
@@ -18,6 +18,6 @@ app.use(cors());
 
 // routing
 app.use('/api', indexController);
-app.use('/api/users', userController);
+app.use('/api/tasks', taskController);
 
 export default app;
