@@ -1,7 +1,35 @@
 <template>
   <div>
     <h2>Task App</h2>
+    <br />
+    <br />
+
+    <h3>SHOW_TASK</h3>
+    <br />
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>CONTENT</th>
+          <th>STATUS</th>
+          <th>DELETE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(task, index) in tasks" :key="index">
+          <td>{{ index + 1 }}</td>
+          <td>{{ task.content }}</td>
+          <td v-if="task.isFinished === true">完了</td>
+          <td v-else>作業中</td>
+          <td>削除</td>
+        </tr>
+      </tbody>
+    </table>
+    <br />
+
     <h3>ADD_TASK</h3>
+    <br />
     <input type="text" v-model="content" />
     <button @click="createTask()">追加</button>
   </div>
@@ -12,8 +40,10 @@ import { defineComponent, ref, useAsync, useContext } from '@nuxtjs/composition-
 import axios from '@nuxtjs/axios';
 
 type TaskType = {
+  id?: number;
   content: string;
   isFinished: boolean;
+  createdAt?: string;
 };
 
 export default defineComponent({
@@ -21,12 +51,19 @@ export default defineComponent({
     // axios
     const { $axios } = useContext();
 
+    // asyncData
+    useAsync(async () => {
+      const result = await $axios.$get('/api/tasks');
+      tasks.value = result.tasks;
+    });
+
     // data
     const content = ref<string>('');
     const task = ref<TaskType>({
       content: content,
       isFinished: false,
     });
+    const tasks = ref<TaskType[]>();
 
     // methods
     const createTask = async () => {
@@ -40,6 +77,7 @@ export default defineComponent({
       // data
       content,
       task,
+      tasks,
       // methods
       createTask,
     };
