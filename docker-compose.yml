@@ -1,0 +1,50 @@
+version: '3.8'
+
+volumes:
+  db-data:
+
+services:
+  # MySQL
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: $MYSQL_DATABASE
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      TZ: $TZ
+    volumes:
+      - db-data:/var/lib/mysql
+      - db-data:/etc/mysql/conf.d/my.cnf
+
+  #【backend】Express
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    environment:
+      TZ: $TZ
+      DEBUG: $BACKEND_DEBUG
+      DATABASE_URL: $BACKEND_DATABASE_URL
+    tty: true
+    ports:
+      - $BACKEND_PORT:18080
+      - $STUDIO_PORT:5555
+    restart: always
+    volumes:
+      - $BACKEND_DIR:$BACKEND_WORK_DIR
+    working_dir: $BACKEND_WORK_DIR
+    command: [sh, -c, npm install && npm run build && npm run start]
+
+  # 【Frontend】Nuxt.js
+  front:
+    build:
+      context: .
+      dockerfile: ./docker/front/Dockerfile
+    command: yarn dev
+    volumes:
+      - ./frontend:/app
+      - ./app/node_modules
+    ports:
+      - $FRONT_PORT:3000
+      - $STORYBOOK_PORT:6006
+    init: true
+    restart: on-failure
