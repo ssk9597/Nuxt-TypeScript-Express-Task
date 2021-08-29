@@ -1,8 +1,9 @@
 <template>
   <div>
-    <h1>
-      {{ data }}
-    </h1>
+    <h2>Task App</h2>
+    <h3>ADD_TASK</h3>
+    <input type="text" v-model="content" />
+    <button @click="createTask()">追加</button>
   </div>
 </template>
 
@@ -10,15 +11,38 @@
 import { defineComponent, ref, useAsync, useContext } from '@nuxtjs/composition-api';
 import axios from '@nuxtjs/axios';
 
+type TaskType = {
+  content: string;
+  isFinished: boolean;
+};
+
 export default defineComponent({
   setup() {
-    const data = ref({});
+    // axios
     const { $axios } = useContext();
-    useAsync(async () => {
-      const result = await $axios.$get('/api');
-      data.value = result;
+
+    // data
+    const content = ref<string>('');
+    const task = ref<TaskType>({
+      content: content,
+      isFinished: false,
     });
-    return { data };
+
+    // methods
+    const createTask = async () => {
+      window.location.href = 'http://localhost:3000';
+      await $axios.$post('/api/tasks/store', {
+        task: task.value,
+      });
+    };
+
+    return {
+      // data
+      content,
+      task,
+      // methods
+      createTask,
+    };
   },
 });
 </script>
