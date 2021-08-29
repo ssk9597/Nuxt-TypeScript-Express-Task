@@ -7,7 +7,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
+model Task {
   id         Int      @id @default(autoincrement())
   content    String
   isFinished Boolean  @default(false)
