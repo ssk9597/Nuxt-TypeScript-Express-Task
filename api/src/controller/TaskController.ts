@@ -20,4 +20,14 @@ router.post('/store', async (req: Request, res: Response) => {
   });
 });
 
+// POST /api/tasks/delete
+router.post('/delete', async (req: Request, res: Response) => {
+  const id: number = req.body.id;
+  await prisma.task.delete({
+    where: {
+      id: id,
+    },
+  });
+});
+
 export default router;
