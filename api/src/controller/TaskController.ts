@@ -30,4 +30,15 @@ router.post('/delete', async (req: Request, res: Response) => {
   });
 });
 
+// POST /api/tasks/update
+router.post('/update', async (req: Request, res: Response) => {
+  const id: number = req.body.id;
+  const isFinished: boolean = req.body.isFinished;
+
+  await prisma.task.update({
+    where: { id: id },
+    data: { isFinished: !isFinished },
+  });
+});
+
 export default router;

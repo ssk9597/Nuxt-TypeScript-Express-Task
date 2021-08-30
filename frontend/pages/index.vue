@@ -20,9 +20,13 @@
         <tr v-for="(task, index) in tasks" :key="index">
           <td>{{ index + 1 }}</td>
           <td>{{ task.content }}</td>
-          <td v-if="task.isFinished === true">完了</td>
-          <td v-else>作業中</td>
-          <td><button @click="deleteTask(task.id)">削除</button></td>
+          <td v-if="task.isFinished === true">
+            <button @click="updateTask(task.id, task.isFinished)">完了</button>
+          </td>
+          <td v-else>
+            <button @click="updateTask(task.id, task.isFinished)">作業中</button>
+          </td>
+          <td><button @click="deleteTask(task.id, task.isFinished)">削除</button></td>
         </tr>
       </tbody>
     </table>
@@ -80,6 +84,14 @@ export default defineComponent({
       });
     };
 
+    const updateTask = async (id: number, isFinished: boolean) => {
+      window.location.href = 'http://localhost:3000';
+      await $axios.$post('/api/tasks/update', {
+        id: id,
+        isFinished: isFinished,
+      });
+    };
+
     return {
       // data
       content,
@@ -88,6 +100,7 @@ export default defineComponent({
       // methods
       createTask,
       deleteTask,
+      updateTask,
     };
   },
 });
