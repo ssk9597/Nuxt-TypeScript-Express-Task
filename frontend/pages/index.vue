@@ -22,7 +22,7 @@
           <td>{{ task.content }}</td>
           <td v-if="task.isFinished === true">完了</td>
           <td v-else>作業中</td>
-          <td>削除</td>
+          <td><button @click="deleteTask(task.id)">削除</button></td>
         </tr>
       </tbody>
     </table>
@@ -73,6 +73,13 @@ export default defineComponent({
       });
     };
 
+    const deleteTask = async (id: number) => {
+      window.location.href = 'http://localhost:3000';
+      await $axios.$post('/api/tasks/delete', {
+        id: id,
+      });
+    };
+
     return {
       // data
       content,
@@ -80,6 +87,7 @@ export default defineComponent({
       tasks,
       // methods
       createTask,
+      deleteTask,
     };
   },
 });
